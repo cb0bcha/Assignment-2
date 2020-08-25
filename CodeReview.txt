@@ -1,0 +1,36 @@
+1. XML documentation comment is not accurate and informative.
+   a) Method name is GetRowEx and not GetRowsEx!
+   b) There is a grammatical error. It should be 'the difference is' and not 'the different is'.
+   c) <see cref="" /> tag can be used to link to GetRows method
+   d) <param/> tag should be used to describe input parameters
+   e) <returns/> tag should describe return parameter
+
+2. Method name, GetRowEx, is not descriptive.
+
+3. Parameters order should be (DbCommand command, string sql, DbCommon db, DbType[] types, object[] values, bool noDateTime)
+
+4. SRP violation
+   a) This method can be executed by passing in just sql or sql with types & values. So, we should split it into 2 separate overloaded methods as follows:
+      public static object[] GetRowEx(DbCommand command, string sql, bool noDateTime)
+      public static object[] GetRowEx(DbCommand command, string sql, DbCommon db, DbType[] types, object[] values, bool noDateTime)
+
+5. Boolean parameter, noDateTime, leads to 2 different flows. Each of above methods can be split further as follows:
+   public static object[] GetRowWithDateTime(DbCommand command, string sql)
+   public static object[] GetRowWithNoDateTime(DbCommand command, string sql)
+   public static object[] GetRowWithDateTime(DbCommand command, string sql, DbCommon db, DbType[] types, object[] values)
+   public static object[] GetRowWithNoDateTime(DbCommand command, string sql, DbCommon db, DbType[] types, object[] values)
+
+6. Line 10 - Other parameters are not logged. 
+
+7. Parameter, db, is needed only when types and values are passed.
+
+8. Line 22 - local variable rd can be descriptive such as reader.
+
+9. Line 31 - we should use {} for if statement even if there is only 1 enclosing statement.
+
+10. Line 31 - we can capture, row[i] as datetime, within the if statement's condition itself. With this, we can get rid of explicit cast.
+
+11. Line 39 - Other parameters are not logged. StackTrace should be logged for better diagnostics. Method name is GetRowEx and not GetRowsEx. 
+   This hardcoding can be removed by using nameof().
+
+12. Line 12, 22, 25, 28, 31, 33, 42 - Line-break is missing.
